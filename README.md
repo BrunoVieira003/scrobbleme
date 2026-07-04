@@ -8,6 +8,7 @@ Scroobleme is a simple software to add a Right-Click interaction to scrobble a m
 2. After installing, right-click some mp3 file and click on Scrobble me
 
 3. If this is your first time, a browser tab will open asking for access to your account. Click in "Yes, allow access"
+4. Right-click on any mp3 file and click on the option "Scrooble me", wait a few seconds and it's done
 
 # Development
 ## Compiling to exe
