@@ -11,18 +11,16 @@ RequestExecutionLevel admin
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
+!define MUI_HEADERIMAGE_BITMAP "icon.bmp"
 
 !insertmacro MUI_LANGUAGE "English"
 
-; =========================
-; Install Section
-; =========================
 Section "Install"
 
 	SetOutPath "$INSTDIR"
 
-	; Copy your compiled Go binary
-	File "scrobbleme.exe"
+	; Compiled Go binary
+	File "..\scrobbleme.exe"
 
 	CreateDirectory "$APPDATA\Scrobbleme"
 	FileOpen $0 "$APPDATA\Scrobbleme\config.json" w
@@ -36,6 +34,8 @@ Section "Install"
 	WriteRegStr HKLM "Software\Scrobbleme" "InstallDir" "$INSTDIR"
 
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Scrobbleme" "DisplayName" "Scrobbleme"
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Scrobbleme" "Publisher" "BrunoVieira003"
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Scrobbleme" "DisplayVersion" "0.1.0"
 
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Scrobbleme" "UninstallString" \
 		"$INSTDIR\uninstall.exe"
@@ -59,9 +59,6 @@ Section "Install"
 
 SectionEnd
 
-; =========================
-; Uninstaller
-; =========================
 Section "Uninstall"
 
 	Delete "$INSTDIR\scrobbleme.exe"
@@ -71,7 +68,7 @@ Section "Uninstall"
 	; remove app registry key
 	DeleteRegKey HKLM "Software\Scrobbleme"
 
-	; remove Windows Apps entry (IMPORTANT FIX)
+	; remove Windows Apps entry
 	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Scrobbleme"
 
 	; remove context menu
