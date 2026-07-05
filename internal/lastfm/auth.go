@@ -109,7 +109,7 @@ func CheckAuthorization(token string, retries int8) (AuthorizationResponse, erro
 }
 
 func GenerateSigForSession(token string) string {
-	sigBuilder := OldSignatureBuilder{
+	sigBuilder := SignatureBuilder{
 		ApiKey:       API_KEY,
 		SharedSecret: SHARED_SECRET,
 		Method:       "auth.getSession",
