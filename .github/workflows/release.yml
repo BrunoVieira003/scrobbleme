@@ -33,9 +33,8 @@ jobs:
           mkdir dist
 
           go build `
-            -ldflags="-H=windowsgui"
-            -o scrobbleme.exe`
-            ./cmd/app
+            -ldflags="-H=windowsgui" `
+            -o scrobbleme.exe
 
       - name: Install NSIS
         run: choco install nsis -y
