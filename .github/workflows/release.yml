@@ -33,6 +33,7 @@ jobs:
           mkdir dist
 
           go build `
+            -ldflags="-H=windowsgui"
             -o scrobbleme.exe`
             ./cmd/app
 
