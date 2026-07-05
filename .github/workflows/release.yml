@@ -37,9 +37,12 @@ jobs:
             -o scrobbleme.exe
 
       - name: Install NSIS
-        uses: joncloud/makensis-action@v4
-        with:
-          script-file: script.nsi
+        run: |
+          iwr -useb get.scoop.sh -outfile 'install.ps1'
+          .\install.ps1 -RunAsAdmin
+          scoop update
+          scoop bucket add extras
+          scoop install nsis
 
       - name: Build installer
         shell: powershell
