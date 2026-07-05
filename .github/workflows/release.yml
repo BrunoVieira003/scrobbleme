@@ -37,7 +37,7 @@ jobs:
             -o scrobbleme.exe
 
       - name: Install NSIS
-        run: choco install nsis -y
+        uses: joncloud/makensis-action@v4
 
       - name: Build installer
         shell: powershell
