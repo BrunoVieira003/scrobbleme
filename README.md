@@ -3,7 +3,7 @@ Scroobleme is a simple software to add a Right-Click interaction to scrobble a m
 
 ## How to use
 ### Installing
-1. You can download the Windows installer from the releases page and execute it
+1. You can download the Windows installer from the [releases](https://github.com/BrunoVieira003/scrobbleme/releases) page and install
 
 2. After installing, right-click some mp3 file and click on Scrobble me
 
