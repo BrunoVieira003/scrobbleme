@@ -119,7 +119,7 @@ func GenerateSigForSession(token string) string {
 	return sigBuilder.Signature("")
 }
 
-func GenerateSigForScrobble(sk string, timestamp string, track string, artist string) string {
+func GenerateSigForScrobble(sk string, timestamp string, track string, artist string, album string, albumArtist string) string {
 	sigBuilder := SignatureBuilder{
 		Method:       "track.scrobble",
 		ApiKey:       API_KEY,
@@ -129,6 +129,9 @@ func GenerateSigForScrobble(sk string, timestamp string, track string, artist st
 
 	sigBuilder.SetTrack(track)
 	sigBuilder.SetArtist(artist)
+
+	sigBuilder.SetAlbum(album)
+	sigBuilder.SetAlbumArtist(albumArtist)
 
 	return sigBuilder.Signature(timestamp)
 }

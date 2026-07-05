@@ -15,6 +15,8 @@ type SignatureBuilder struct {
 	SessionKey   string
 	track        string
 	artist       string
+	album        string
+	albumArtist  string
 }
 
 func (sb *SignatureBuilder) SetTrack(track string) {
@@ -25,8 +27,22 @@ func (sb *SignatureBuilder) SetArtist(artist string) {
 	sb.artist = artist
 }
 
+func (sb *SignatureBuilder) SetAlbum(album string) {
+	sb.album = album
+}
+
+func (sb *SignatureBuilder) SetAlbumArtist(albumArtist string) {
+	sb.albumArtist = albumArtist
+}
+
 func (sb *SignatureBuilder) SignatureBase(timestamp string) string {
 	builder := strings.Builder{}
+
+	builder.WriteString("album")
+	builder.WriteString(sb.album)
+
+	builder.WriteString("albumArtist")
+	builder.WriteString(sb.albumArtist)
 
 	builder.WriteString("api_key")
 	builder.WriteString(sb.ApiKey)
@@ -44,7 +60,7 @@ func (sb *SignatureBuilder) SignatureBase(timestamp string) string {
 
 	builder.WriteString("timestamp")
 	builder.WriteString(timestamp)
-	
+
 	builder.WriteString("track")
 	builder.WriteString(sb.track)
 

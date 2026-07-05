@@ -1,0 +1,51 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: windows-latest
+
+    env:
+      API_KEY: ${{ secrets.API_KEY }}
+      SHARED_SECRET: ${{ secrets.SHARED_SECRET }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Build
+        shell: powershell
+        run: |
+          mkdir dist
+
+          go build `
+            -o scrobbleme.exe`
+            ./cmd/app
+
+      - name: Install NSIS
+        run: choco install nsis -y
+
+      - name: Build installer
+        shell: powershell
+        run: |
+          makensis script.nsi
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            ScrobblemeInstaller.exe

@@ -25,9 +25,9 @@ func main() {
 		}
 
 		targetFile := args[1]
-		title, artistTag := internal.ReadTagsFromFile(targetFile)
+		title, artistTag, album, albumArtist := internal.ReadTagsFromFile(targetFile)
 
-		lastfm.Scrobble(config.Session.Key, title, artistTag)
+		lastfm.Scrobble(config.Session.Key, title, artistTag, album, albumArtist)
 	}
 
 
