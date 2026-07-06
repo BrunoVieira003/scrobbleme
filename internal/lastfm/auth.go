@@ -93,6 +93,7 @@ func CheckAuthorization(token string, retries int8) (AuthorizationResponse, erro
 			if errResponse.Error == 14 {
 				continue
 			} else {
+				println("error_code", errResponse.Error, errResponse.Message)
 				log.Fatal(err.Error())
 			}
 		}
@@ -116,7 +117,7 @@ func GenerateSigForSession(token string) string {
 		Token:        token,
 	}
 
-	return sigBuilder.Signature("")
+	return sigBuilder.Signature("", false)
 }
 
 func GenerateSigForScrobble(sk string, timestamp string, track string, artist string, album string, albumArtist string) string {
@@ -133,7 +134,7 @@ func GenerateSigForScrobble(sk string, timestamp string, track string, artist st
 	sigBuilder.SetAlbum(album)
 	sigBuilder.SetAlbumArtist(albumArtist)
 
-	return sigBuilder.Signature(timestamp)
+	return sigBuilder.Signature(timestamp, true)
 }
 
 func getToken() string {

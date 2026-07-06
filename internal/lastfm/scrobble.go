@@ -17,8 +17,6 @@ func Scrobble(sessionKey string, track string, artist string, album string, albu
 
 	form := url.Values{
 		"method":      {"track.scrobble"},
-		"album":       {album},
-		"albumArtist": {albumArtist},
 		"api_key":     {API_KEY},
 		"artist":      {artist},
 		"track":       {track},
@@ -28,12 +26,15 @@ func Scrobble(sessionKey string, track string, artist string, album string, albu
 		"format":      {"json"},
 	}
 
+	if album != "" && albumArtist != ""{
+		form.Set("album", album)
+		form.Set("albumArtist", albumArtist)
+	}
+
 	resp, err := http.PostForm("https://ws.audioscrobbler.com/2.0", form)
 	if err != nil {
 		log.Fatal("Failed to scrobble")
 	}
-
-	println(resp.StatusCode)
 
 	defer resp.Body.Close()
 }

@@ -35,20 +35,24 @@ func (sb *SignatureBuilder) SetAlbumArtist(albumArtist string) {
 	sb.albumArtist = albumArtist
 }
 
-func (sb *SignatureBuilder) SignatureBase(timestamp string) string {
+func (sb *SignatureBuilder) SignatureBase(timestamp string, isScrobble bool) string {
 	builder := strings.Builder{}
 
-	builder.WriteString("album")
-	builder.WriteString(sb.album)
+	if isScrobble && sb.album != "" && sb.albumArtist != ""{
+		builder.WriteString("album")
+		builder.WriteString(sb.album)
 
-	builder.WriteString("albumArtist")
-	builder.WriteString(sb.albumArtist)
+		builder.WriteString("albumArtist")
+		builder.WriteString(sb.albumArtist)
+	}
 
 	builder.WriteString("api_key")
 	builder.WriteString(sb.ApiKey)
 
-	builder.WriteString("artist")
-	builder.WriteString(sb.artist)
+	if isScrobble{
+		builder.WriteString("artist")
+		builder.WriteString(sb.artist)
+	}
 
 	builder.WriteString("method")
 	builder.WriteString(sb.Method)
@@ -57,12 +61,14 @@ func (sb *SignatureBuilder) SignatureBase(timestamp string) string {
 		builder.WriteString("sk")
 		builder.WriteString(sb.SessionKey)
 	}
+	
+	if isScrobble{
+		builder.WriteString("timestamp")
+		builder.WriteString(timestamp)
 
-	builder.WriteString("timestamp")
-	builder.WriteString(timestamp)
-
-	builder.WriteString("track")
-	builder.WriteString(sb.track)
+		builder.WriteString("track")
+		builder.WriteString(sb.track)
+	}
 
 	if sb.Token != "" {
 		builder.WriteString("token")
@@ -74,9 +80,9 @@ func (sb *SignatureBuilder) SignatureBase(timestamp string) string {
 	return builder.String()
 }
 
-func (sb *SignatureBuilder) Signature(timestamp string) string {
+func (sb *SignatureBuilder) Signature(timestamp string, isScrobble bool) string {
 	hasher := md5.New()
-	sigBase := sb.SignatureBase(timestamp)
+	sigBase := sb.SignatureBase(timestamp, isScrobble)
 	println("sig_base", sigBase)
 	io.WriteString(hasher, sigBase)
 	md5String := hex.EncodeToString(hasher.Sum(nil))
