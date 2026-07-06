@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 
-	// "github.com/bogem/id3v2"
 	"github.com/dhowden/tag"
 )
 

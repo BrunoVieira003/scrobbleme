@@ -35,6 +35,5 @@ func Scrobble(sessionKey string, track string, artist string, album string, albu
 	if err != nil {
 		log.Fatal("Failed to scrobble")
 	}
-
 	defer resp.Body.Close()
 }

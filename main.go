@@ -2,7 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
+	"path"
 	"scrobbleme/internal"
 	"scrobbleme/internal/lastfm"
 )
@@ -14,6 +16,17 @@ func main() {
 		fmt.Println("Usage: scrobbleme <file-path>")
 		return
 	}
+	
+	config_dir, _ := os.UserConfigDir()
+	logFilepath := path.Join(config_dir, "Scrobbleme", "logs.txt")
+
+	logFile, err := os.OpenFile(logFilepath, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+    if err != nil {
+        log.Fatal(err)
+    }
+    defer logFile.Close()
+
+    log.SetOutput(logFile)
 
 	config, loaded := internal.LoadConfig()
 	if loaded{
@@ -28,6 +41,7 @@ func main() {
 		title, artistTag, album, albumArtist := internal.ReadTagsFromFile(targetFile)
 
 		lastfm.Scrobble(config.Session.Key, title, artistTag, album, albumArtist)
+		log.Println("Scrobble", "track:", title, "artist:", artistTag, "album:", album, "albumArtist:", albumArtist)
 	}
 
 
