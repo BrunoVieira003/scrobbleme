@@ -1,0 +1,51 @@
+name: Create release
+
+on:
+  push:
+    tags:
+      - 'v*'
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Setup Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.25'
+
+    - name: Setup NSIS
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y nsis
+
+    - name: Install goversioninfo
+      run: go install github.com/josephspurrier/goversioninfo/cmd/goversioninfo@latest
+
+    - name: Generate resource files
+      run: go generate
+
+    - name: Build project
+      run: |
+        GOOS=windows GOARCH=amd64 go build \
+          -ldflags="-H=windowsgui" \
+          -o scrobbleme.exe
+
+    - name: Build installer
+      run: |
+        makensis installer/installer.nsi
+        mv ./installer/ScrobblemeInstaller.exe ScrobblemeInstaller_${{ github.ref_name }}.exe
+        mv scrobbleme.exe scrobbleme_${{ github.ref_name }}.exe
+
+    - name: Create Github Release
+      uses: softprops/action-gh-release@v2
+      with:
+        draft: true
+        files: |
+          scrobbleme_${{ github.ref_name }}.exe
+          ScrobblemeInstaller_${{ github.ref_name }}.exe
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
