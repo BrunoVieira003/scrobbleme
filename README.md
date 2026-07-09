@@ -11,7 +11,10 @@ Scroobleme is a simple software to add a Right-Click interaction to scrobble a m
 4. Right-click on any mp3 file and click on the option "Scrobble me", wait a few seconds and it's done
 
 # Development
-## Compiling to exe
+## Requirements
+- Go 1.25+
+
+## Building
 ```bash
 go build -ldflags="-H=windowsgui" -o scrobbleme.exe
 ```

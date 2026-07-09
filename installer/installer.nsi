@@ -8,10 +8,11 @@ RequestExecutionLevel admin
 ; =========================
 ; Installer Pages
 ; =========================
+!define MUI_ICON "../assets/icon.ico"
+!define MUI_UNICON "../assets/icon.ico"
 !insertmacro MUI_PAGE_DIRECTORY
 !insertmacro MUI_PAGE_INSTFILES
 !insertmacro MUI_PAGE_FINISH
-!define MUI_HEADERIMAGE_BITMAP "icon.bmp"
 
 !insertmacro MUI_LANGUAGE "English"
 
@@ -19,7 +20,6 @@ Section "Install"
 
 	SetOutPath "$INSTDIR"
 
-	; Compiled Go binary
 	File "..\scrobbleme.exe"
 
 	CreateDirectory "$APPDATA\Scrobbleme"
@@ -55,6 +55,7 @@ Section "Install"
 
 	; Add right-click entry
 	WriteRegStr HKCR "SystemFileAssociations\.mp3\shell\Scrobbleme" "" "Scrobble me"
+	WriteRegStr HKCR "SystemFileAssociations\.mp3\shell\Scrobbleme" "Icon" "$INSTDIR\scrobbleme.exe,0"
 	WriteRegStr HKCR "SystemFileAssociations\.mp3\shell\Scrobbleme\command" "" '"$INSTDIR\scrobbleme.exe" "%1"'
 
 SectionEnd
