@@ -1,5 +1,7 @@
 !include "MUI2.nsh"
 
+SetCompressor /SOLID lzma
+
 Name "Scrobbleme"
 OutFile "ScrobblemeInstaller.exe"
 InstallDir "$PROGRAMFILES\Scrobbleme"
@@ -35,7 +37,7 @@ Section "Install"
 
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Scrobbleme" "DisplayName" "Scrobbleme"
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Scrobbleme" "Publisher" "BrunoVieira003"
-	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Scrobbleme" "DisplayVersion" "0.1.1"
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Scrobbleme" "DisplayVersion" "0.2.0"
 
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\Scrobbleme" "UninstallString" \
 		"$INSTDIR\uninstall.exe"

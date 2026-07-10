@@ -9,6 +9,8 @@ import (
 	"path"
 	"scrobbleme/internal"
 	"scrobbleme/internal/lastfm"
+
+	"github.com/gen2brain/beeep"
 )
 
 func main() {
@@ -18,6 +20,8 @@ func main() {
 		fmt.Println("Usage: scrobbleme <file-path>")
 		return
 	}
+
+	beeep.AppName = "Scrobbleme"
 	
 	config_dir, _ := os.UserConfigDir()
 	logFilepath := path.Join(config_dir, "Scrobbleme", "logs.txt")
@@ -43,6 +47,8 @@ func main() {
 		title, artistTag, album, albumArtist := internal.ReadTagsFromFile(targetFile)
 
 		lastfm.Scrobble(config.Session.Key, title, artistTag, album, albumArtist)
+
+		beeep.Notify("Scrobbled", title+" | "+artistTag, "")
 		log.Println("Scrobble", "track:", title, "artist:", artistTag, "album:", album, "albumArtist:", albumArtist)
 	}
 

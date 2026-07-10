@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"strconv"
 	"time"
+
+	"github.com/gen2brain/beeep"
 )
 
 func Scrobble(sessionKey string, track string, artist string, album string, albumArtist string) {
@@ -33,6 +35,7 @@ func Scrobble(sessionKey string, track string, artist string, album string, albu
 
 	resp, err := http.PostForm("https://ws.audioscrobbler.com/2.0", form)
 	if err != nil {
+		beeep.Notify("Failed to scrobble", err.Error(), "")
 		log.Fatal("Failed to scrobble")
 	}
 	defer resp.Body.Close()

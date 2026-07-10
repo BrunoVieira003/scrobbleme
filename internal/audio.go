@@ -6,11 +6,13 @@ import (
 	"os"
 
 	"github.com/dhowden/tag"
+	"github.com/gen2brain/beeep"
 )
 
 func ReadTagsFromFile(audiofilePath string) (string, string, string, string) {
 	file, err := os.Open(audiofilePath)
 	if err != nil {
+		beeep.Notify("Failed to scrobble", err.Error(), "")
 		log.Fatal("Error while opening file: ", err)
 	}
 	defer file.Close()
@@ -18,6 +20,7 @@ func ReadTagsFromFile(audiofilePath string) (string, string, string, string) {
 	var reader io.ReadSeeker = file
 	tags, err := tag.ReadFrom(reader)
 	if err != nil {
+		beeep.Notify("Failed to scrobble", err.Error(), "")
 		log.Fatal("Error while opening file: ", err)
 	}
 

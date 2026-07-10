@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/gen2brain/beeep"
 	"github.com/pkg/browser"
 )
 
@@ -79,6 +80,7 @@ func CheckAuthorization(token string, retries int8) (AuthorizationResponse, erro
 
 		resp, err := http.Get(url.String())
 		if err != nil {
+			beeep.Notify("Authentication failed", err.Error(), "./assets/icon.ico")
 			log.Fatal("Unable to make request")
 		}
 		defer resp.Body.Close()
