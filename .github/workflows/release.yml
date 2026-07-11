@@ -31,7 +31,7 @@ jobs:
     - name: Build project
       run: |
         GOOS=windows GOARCH=amd64 go build \
-          -ldflags="-H=windowsgui -s -w" \
+          -ldflags="-H=windowsgui -s -w -X scrobbleme/internal.LASTFM_KEY=${{ secrets.LASTFM_KEY }} -X scrobbleme/internal.LASTFM_SECRET=" \
           -o scrobbleme.exe
 
     - name: Build installer

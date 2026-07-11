@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"scrobbleme/internal"
 	"strconv"
 	"time"
 
@@ -18,17 +19,17 @@ func Scrobble(sessionKey string, track string, artist string, album string, albu
 	api_sig := GenerateSigForScrobble(sessionKey, timestampStr, track, artist, album, albumArtist)
 
 	form := url.Values{
-		"method":      {"track.scrobble"},
-		"api_key":     {API_KEY},
-		"artist":      {artist},
-		"track":       {track},
-		"timestamp":   {timestampStr},
-		"sk":          {sessionKey},
-		"api_sig":     {api_sig},
-		"format":      {"json"},
+		"method":    {"track.scrobble"},
+		"api_key":   {internal.LASTFM_KEY},
+		"artist":    {artist},
+		"track":     {track},
+		"timestamp": {timestampStr},
+		"sk":        {sessionKey},
+		"api_sig":   {api_sig},
+		"format":    {"json"},
 	}
 
-	if album != "" && albumArtist != ""{
+	if album != "" && albumArtist != "" {
 		form.Set("album", album)
 		form.Set("albumArtist", albumArtist)
 	}

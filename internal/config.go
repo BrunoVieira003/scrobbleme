@@ -7,6 +7,11 @@ import (
 	"path"
 )
 
+var (
+	LASTFM_KEY    = ""
+	LASTFM_SECRET = ""
+)
+
 type Config struct {
 	Session struct {
 		Name string `json:"name"`
@@ -14,7 +19,7 @@ type Config struct {
 	}
 }
 
-func createConfigFile(filepath string){
+func createConfigFile(filepath string) {
 	file, err := os.Create(filepath)
 	if err != nil {
 		log.Fatalf("Failed to create file: %v", err)
@@ -44,19 +49,19 @@ func LoadConfig() (Config, bool) {
 	return config, true
 }
 
-func SaveConfig(config Config){
+func SaveConfig(config Config) {
 	config_dir, _ := os.UserConfigDir()
 	app_dir := path.Join(config_dir, "Scrobbleme")
 
 	configFilePath := path.Join(app_dir, "config.json")
 
 	bytes, err := json.MarshalIndent(config, "", "  ")
-    if err != nil {
-        panic(err)
-    }
+	if err != nil {
+		panic(err)
+	}
 
-    err = os.WriteFile(configFilePath, bytes, 0644)
-    if err != nil {
-        panic(err)
-    }
+	err = os.WriteFile(configFilePath, bytes, 0644)
+	if err != nil {
+		panic(err)
+	}
 }

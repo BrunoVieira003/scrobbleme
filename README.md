@@ -18,5 +18,5 @@ Scroobleme is a simple software to add a Right-Click interaction to scrobble a m
 
 ## Building
 ```bash
-go build -ldflags="-H=windowsgui -s -w" -o scrobbleme.exe
+go build -ldflags="-H=windowsgui -s -w -X scrobbleme/internal.LASTFM_KEY=<your lastfm api key> -X scrobbleme/internal.LASTFM_SECRET=<your lastfm secret>" -o scrobbleme.exe
 ```

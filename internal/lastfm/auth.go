@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"scrobbleme/internal"
 	"time"
 
 	"github.com/gen2brain/beeep"
@@ -28,9 +29,6 @@ type LastFmErrorResponse struct {
 	Error   int    `json:"error"`
 }
 
-const API_KEY = "c6132058a97bd7b512ebd7782a34a609"
-const SHARED_SECRET = "ed99f8e0963272e84f9951339b17408c"
-
 func AuthenticateLastFM() AuthorizationResponse {
 	token := getToken()
 
@@ -40,7 +38,7 @@ func AuthenticateLastFM() AuthorizationResponse {
 	}
 
 	params := authorizeUrl.Query()
-	params.Add("api_key", API_KEY)
+	params.Add("api_key", internal.LASTFM_KEY)
 	params.Add("token", token)
 
 	authorizeUrl.RawQuery = params.Encode()
@@ -52,6 +50,7 @@ func AuthenticateLastFM() AuthorizationResponse {
 
 	authorization, err := CheckAuthorization(token, 5)
 	if err != nil {
+		beeep.Notify("Unable to check auth.api_key", internal.LASTFM_KEY, "")
 		log.Fatal(err.Error())
 	}
 
@@ -70,7 +69,7 @@ func CheckAuthorization(token string, retries int8) (AuthorizationResponse, erro
 		}
 
 		params := url.Query()
-		params.Add("api_key", API_KEY)
+		params.Add("api_key", internal.LASTFM_KEY)
 		params.Add("api_sig", GenerateSigForSession(token))
 		params.Add("format", "json")
 		params.Add("method", "auth.getSession")
@@ -113,8 +112,8 @@ func CheckAuthorization(token string, retries int8) (AuthorizationResponse, erro
 
 func GenerateSigForSession(token string) string {
 	sigBuilder := SignatureBuilder{
-		ApiKey:       API_KEY,
-		SharedSecret: SHARED_SECRET,
+		ApiKey:       internal.LASTFM_KEY,
+		SharedSecret: internal.LASTFM_SECRET,
 		Method:       "auth.getSession",
 		Token:        token,
 	}
@@ -125,8 +124,8 @@ func GenerateSigForSession(token string) string {
 func GenerateSigForScrobble(sk string, timestamp string, track string, artist string, album string, albumArtist string) string {
 	sigBuilder := SignatureBuilder{
 		Method:       "track.scrobble",
-		ApiKey:       API_KEY,
-		SharedSecret: SHARED_SECRET,
+		ApiKey:       internal.LASTFM_KEY,
+		SharedSecret: internal.LASTFM_SECRET,
 		SessionKey:   sk,
 	}
 
@@ -147,7 +146,7 @@ func getToken() string {
 
 	params := authenticateUrl.Query()
 	params.Add("method", "auth.getToken")
-	params.Add("api_key", API_KEY)
+	params.Add("api_key", internal.LASTFM_KEY)
 	params.Add("format", "json")
 
 	authenticateUrl.RawQuery = params.Encode()
