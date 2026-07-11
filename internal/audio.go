@@ -9,7 +9,7 @@ import (
 	"github.com/gen2brain/beeep"
 )
 
-func ReadTagsFromFile(audiofilePath string) (string, string, string, string) {
+func ReadTagsFromFile(audiofilePath string) (string, string, string, string, *tag.Picture) {
 	file, err := os.Open(audiofilePath)
 	if err != nil {
 		beeep.Notify("Failed to scrobble", err.Error(), "")
@@ -25,5 +25,5 @@ func ReadTagsFromFile(audiofilePath string) (string, string, string, string) {
 	}
 
 	
-	return tags.Title(), tags.Artist(), tags.Album(), tags.AlbumArtist()
+	return tags.Title(), tags.Artist(), tags.Album(), tags.AlbumArtist(), tags.Picture()
 }

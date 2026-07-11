@@ -32,7 +32,7 @@ func main() {
     }
     defer logFile.Close()
 
-    log.SetOutput(logFile)
+    // log.SetOutput(logFile)
 
 	config, loaded := internal.LoadConfig()
 	if loaded{
@@ -44,11 +44,22 @@ func main() {
 		}
 
 		targetFile := args[1]
-		title, artistTag, album, albumArtist := internal.ReadTagsFromFile(targetFile)
+		title, artistTag, album, albumArtist, picture := internal.ReadTagsFromFile(targetFile)
 
 		lastfm.Scrobble(config.Session.Key, title, artistTag, album, albumArtist)
 
-		beeep.Notify("Scrobbled", title+" | "+artistTag, "")
+		picturePath := ""
+		if picture != nil{
+			tmp, _ := os.CreateTemp("", "scrobbleme-cover-*." + picture.Ext)
+			defer tmp.Close()
+			defer os.Remove(tmp.Name())
+
+			tmp.Write(picture.Data)
+			picturePath = tmp.Name()
+		}
+
+
+		beeep.Notify("Scrobbled", title+" | "+artistTag, picturePath)
 		log.Println("Scrobble", "track:", title, "artist:", artistTag, "album:", album, "albumArtist:", albumArtist)
 	}
 
