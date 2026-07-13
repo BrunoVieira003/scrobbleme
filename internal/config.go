@@ -8,8 +8,8 @@ import (
 )
 
 var (
-	LASTFM_KEY    = "c6132058a97bd7b512ebd7782a34a609"
-	LASTFM_SECRET = "ed99f8e0963272e84f9951339b17408c"
+	LASTFM_KEY    = ""
+	LASTFM_SECRET = ""
 )
 
 type Config struct {
