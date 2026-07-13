@@ -7,9 +7,18 @@ import (
 
 	"github.com/dhowden/tag"
 	"github.com/gen2brain/beeep"
+	"github.com/lizc2003/audioduration"
 )
 
-func ReadTagsFromFile(audiofilePath string) (string, string, string, string, *tag.Picture) {
+type AudioTags struct {
+	Title string
+	Artist string
+	Album string
+	AlbumArtist string
+	Duration float64
+}
+
+func ReadTagsFromFile(audiofilePath string) (AudioTags, *tag.Picture) {
 	file, err := os.Open(audiofilePath)
 	if err != nil {
 		beeep.Notify("Failed to scrobble", err.Error(), "")
@@ -24,6 +33,19 @@ func ReadTagsFromFile(audiofilePath string) (string, string, string, string, *ta
 		log.Fatal("Error while opening file: ", err)
 	}
 
-	
-	return tags.Title(), tags.Artist(), tags.Album(), tags.AlbumArtist(), tags.Picture()
+	duration, err := audioduration.Duration(file, audioduration.TypeMp3)
+	if err != nil{
+		duration = 0
+		log.Fatal("Error while opening file: ", err)
+	}
+
+	audioTags := AudioTags{
+		Title: tags.Title(),
+		Artist: tags.Artist(),
+		Album: tags.Album(),
+		AlbumArtist: tags.AlbumArtist(),
+		Duration: duration,
+	}
+
+	return audioTags, tags.Picture()
 }

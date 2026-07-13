@@ -9,6 +9,7 @@ import (
 	"path"
 	"scrobbleme/internal"
 	"scrobbleme/internal/lastfm"
+	// "sync"
 
 	"github.com/gen2brain/beeep"
 )
@@ -32,6 +33,8 @@ func main() {
     }
     defer logFile.Close()
 
+	// wg := sync.WaitGroup{}
+
     // log.SetOutput(logFile)
 
 	config, loaded := internal.LoadConfig()
@@ -44,9 +47,9 @@ func main() {
 		}
 
 		targetFile := args[1]
-		title, artistTag, album, albumArtist, picture := internal.ReadTagsFromFile(targetFile)
+		tags, picture := internal.ReadTagsFromFile(targetFile)
 
-		lastfm.Scrobble(config.Session.Key, title, artistTag, album, albumArtist)
+		lastfm.Scrobble(config.Session.Key, tags)
 
 		picturePath := ""
 		if picture != nil{
@@ -59,8 +62,8 @@ func main() {
 		}
 
 
-		beeep.Notify("Scrobbled", title+" | "+artistTag, picturePath)
-		log.Println("Scrobble", "track:", title, "artist:", artistTag, "album:", album, "albumArtist:", albumArtist)
+		beeep.Notify("Scrobbled", tags.Title+" | "+tags.Artist, picturePath)
+		log.Println("Scrobble", "track:", tags.Title, "artist:", tags.Artist, "album:", tags.Album, "albumArtist:", tags.AlbumArtist)
 	}
 
 

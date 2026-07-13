@@ -11,27 +11,27 @@ import (
 	"github.com/gen2brain/beeep"
 )
 
-func Scrobble(sessionKey string, track string, artist string, album string, albumArtist string) {
+func Scrobble(sessionKey string, tags internal.AudioTags) {
 	now := time.Now().UTC()
-	unixSecs := now.Unix()
+	unixSecs := now.Unix() - int64(tags.Duration)
 	timestampStr := strconv.FormatInt(unixSecs, 10)
 
-	api_sig := GenerateSigForScrobble(sessionKey, timestampStr, track, artist, album, albumArtist)
+	api_sig := GenerateSigForScrobble(sessionKey, timestampStr, tags.Title, tags.Artist, tags.Album, tags.AlbumArtist)
 
 	form := url.Values{
 		"method":    {"track.scrobble"},
 		"api_key":   {internal.LASTFM_KEY},
-		"artist":    {artist},
-		"track":     {track},
+		"artist":    {tags.Artist},
+		"track":     {tags.Title},
 		"timestamp": {timestampStr},
 		"sk":        {sessionKey},
 		"api_sig":   {api_sig},
 		"format":    {"json"},
 	}
 
-	if album != "" && albumArtist != "" {
-		form.Set("album", album)
-		form.Set("albumArtist", albumArtist)
+	if tags.Album != "" && tags.Artist != "" {
+		form.Set("album", tags.Album)
+		form.Set("albumArtist", tags.Artist)
 	}
 
 	resp, err := http.PostForm("https://ws.audioscrobbler.com/2.0", form)

@@ -5,6 +5,7 @@ go 1.26.4
 require (
 	github.com/dhowden/tag v0.0.0-20240417053706-3d75831295e8
 	github.com/gen2brain/beeep v0.11.2
+	github.com/lizc2003/audioduration v0.8.0
 	github.com/pkg/browser v0.0.0-20240102092130-5ac0b6a4141c
 )
 
