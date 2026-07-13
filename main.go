@@ -51,18 +51,13 @@ func main() {
 
 		lastfm.Scrobble(config.Session.Key, tags)
 
-		picturePath := ""
+		var ntfyPicture []byte
 		if picture != nil{
-			tmp, _ := os.CreateTemp("", "scrobbleme-cover-*." + picture.Ext)
-			defer tmp.Close()
-			defer os.Remove(tmp.Name())
-
-			tmp.Write(picture.Data)
-			picturePath = tmp.Name()
+			ntfyPicture = picture.Data
 		}
 
 
-		beeep.Notify("Scrobbled", tags.Title+" | "+tags.Artist, picturePath)
+		beeep.Notify("Scrobbled", tags.Title+" | "+tags.Artist, ntfyPicture)
 		log.Println("Scrobble", "track:", tags.Title, "artist:", tags.Artist, "album:", tags.Album, "albumArtist:", tags.AlbumArtist)
 	}
 
