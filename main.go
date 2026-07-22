@@ -9,6 +9,8 @@ import (
 	"path"
 	"scrobbleme/internal"
 	"scrobbleme/internal/lastfm"
+	"strings"
+
 	// "sync"
 
 	"github.com/gen2brain/beeep"
@@ -33,9 +35,7 @@ func main() {
     }
     defer logFile.Close()
 
-	// wg := sync.WaitGroup{}
-
-    // log.SetOutput(logFile)
+    log.SetOutput(logFile)
 
 	config, loaded := internal.LoadConfig()
 	if loaded{
@@ -46,19 +46,37 @@ func main() {
 			internal.SaveConfig(config)
 		}
 
-		targetFile := args[1]
-		tags, picture := internal.ReadTagsFromFile(targetFile)
+		var targetPaths []string
 
-		lastfm.Scrobble(config.Session.Key, tags)
+		for _, arg := range args[1:]{
+			info, _ := os.Stat(arg)
+			if(info.IsDir()){
+				items, _ := os.ReadDir(arg)
+				for _, item := range items{
+					if !item.IsDir() && strings.HasSuffix(item.Name(), ".mp3"){
+						targetPaths = append(targetPaths, path.Join(arg, item.Name()))
+					}
+				}
+			}else{
+				targetPaths = append(targetPaths, arg)
+			}
+		}
 
-		var ntfyPicture []byte
-		if picture != nil{
-			ntfyPicture = picture.Data
+		for _, path := range targetPaths{
+
+			tags, picture := internal.ReadTagsFromFile(path)
+			lastfm.Scrobble(config.Session.Key, tags)
+			var ntfyPicture []byte
+			if picture != nil{
+				ntfyPicture = picture.Data
+			}
+	
+	
+			beeep.Notify("Scrobbled", tags.Title+" | "+tags.Artist, ntfyPicture)
+			log.Println("Scrobble", "track:", tags.Title, "artist:", tags.Artist, "album:", tags.Album, "albumArtist:", tags.AlbumArtist)
 		}
 
 
-		beeep.Notify("Scrobbled", tags.Title+" | "+tags.Artist, ntfyPicture)
-		log.Println("Scrobble", "track:", tags.Title, "artist:", tags.Artist, "album:", tags.Album, "albumArtist:", tags.AlbumArtist)
 	}
 
 

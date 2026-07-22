@@ -60,6 +60,10 @@ Section "Install"
 	WriteRegStr HKCR "SystemFileAssociations\.mp3\shell\Scrobbleme" "Icon" "$INSTDIR\scrobbleme.exe,0"
 	WriteRegStr HKCR "SystemFileAssociations\.mp3\shell\Scrobbleme\command" "" '"$INSTDIR\scrobbleme.exe" "%1"'
 
+	WriteRegStr HKCR "Directory\shell\Scrobbleme" "" "Scrobble folder"
+	WriteRegStr HKCR "Directory\shell\Scrobbleme" "Icon" "$INSTDIR\scrobbleme.exe,0"
+	WriteRegStr HKCR "Directory\shell\Scrobbleme\command" "" '"$INSTDIR\scrobbleme.exe" "%1"'
+
 SectionEnd
 
 Section "Uninstall"
@@ -76,5 +80,6 @@ Section "Uninstall"
 
 	; remove context menu
 	DeleteRegKey HKCR "SystemFileAssociations\.mp3\shell\Scrobbleme"
+	DeleteRegKey HKCR "Directory\shell\Scrobbleme\command"
 
 SectionEnd
