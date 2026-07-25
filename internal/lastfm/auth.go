@@ -62,21 +62,27 @@ func CheckAuthorization(token string, retries int8) (AuthorizationResponse, erro
 	var authResponse AuthorizationResponse
 	var errResponse LastFmErrorResponse
 
+	url, err := url.Parse("https://ws.audioscrobbler.com/2.0")
+	if err != nil {
+		log.Fatal("Unable to parse URL")
+	}
+
+	scrobbler := Scrobbler{
+		ApiKey:       internal.LASTFM_KEY,
+		SharedSecret: internal.LASTFM_SECRET,
+		Token:        token,
+	}
+
+	params := url.Query()
+	params.Add("api_key", internal.LASTFM_KEY)
+	params.Add("api_sig", scrobbler.SessionSignature())
+	params.Add("format", "json")
+	params.Add("method", "auth.getSession")
+	params.Add("token", token)
+
+	url.RawQuery = params.Encode()
+
 	for range retries {
-		url, err := url.Parse("https://ws.audioscrobbler.com/2.0")
-		if err != nil {
-			log.Fatal("Unable to parse URL")
-		}
-
-		params := url.Query()
-		params.Add("api_key", internal.LASTFM_KEY)
-		params.Add("api_sig", GenerateSigForSession(token))
-		params.Add("format", "json")
-		params.Add("method", "auth.getSession")
-		params.Add("token", token)
-
-		url.RawQuery = params.Encode()
-
 		resp, err := http.Get(url.String())
 		if err != nil {
 			beeep.Notify("Authentication failed", err.Error(), "./assets/icon.ico")
@@ -108,34 +114,6 @@ func CheckAuthorization(token string, retries int8) (AuthorizationResponse, erro
 	}
 
 	return authResponse, errors.New("User not authorized")
-}
-
-func GenerateSigForSession(token string) string {
-	sigBuilder := SignatureBuilder{
-		ApiKey:       internal.LASTFM_KEY,
-		SharedSecret: internal.LASTFM_SECRET,
-		Method:       "auth.getSession",
-		Token:        token,
-	}
-
-	return sigBuilder.Signature("", false)
-}
-
-func GenerateSigForScrobble(sk string, timestamp string, track string, artist string, album string, albumArtist string) string {
-	sigBuilder := SignatureBuilder{
-		Method:       "track.scrobble",
-		ApiKey:       internal.LASTFM_KEY,
-		SharedSecret: internal.LASTFM_SECRET,
-		SessionKey:   sk,
-	}
-
-	sigBuilder.SetTrack(track)
-	sigBuilder.SetArtist(artist)
-
-	sigBuilder.SetAlbum(album)
-	sigBuilder.SetAlbumArtist(albumArtist)
-
-	return sigBuilder.Signature(timestamp, true)
 }
 
 func getToken() string {
