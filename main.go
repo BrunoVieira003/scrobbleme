@@ -4,9 +4,11 @@ package main
 
 import (
 	"fmt"
+	"io/fs"
 	"log"
 	"os"
 	"path"
+	"path/filepath"
 	"scrobbleme/internal"
 	"scrobbleme/internal/lastfm"
 	"strings"
@@ -50,29 +52,30 @@ func main() {
 		for _, arg := range args[1:]{
 			info, _ := os.Stat(arg)
 			if(info.IsDir()){
-				items, _ := os.ReadDir(arg)
-				for _, item := range items{
-					if !item.IsDir() && strings.HasSuffix(item.Name(), ".mp3"){
-						targetPaths = append(targetPaths, path.Join(arg, item.Name()))
+				filepath.WalkDir(arg, func(path string, d fs.DirEntry, err error) error {
+					if !d.IsDir() && strings.HasSuffix(path, ".mp3"){
+						targetPaths = append(targetPaths, path)
+						return nil
 					}
-				}
+
+					return err
+				})
 			}else{
 				targetPaths = append(targetPaths, arg)
 			}
 		}
-
 		
 
 		scrobbler := lastfm.Scrobbler{
 			ApiKey:       internal.LASTFM_KEY,
 			SharedSecret: internal.LASTFM_SECRET,
 			SessionKey: config.Session.Key,
-
 		}
 
 		var ntfyPicture []byte
 
 		for _, path := range targetPaths{
+			println(path)
 			tags, picture := internal.ReadTagsFromFile(path)
 			scrobbler.AddTrack(tags.Title, tags.Artist, tags.Album, tags.AlbumArtist, tags.Duration)
 
